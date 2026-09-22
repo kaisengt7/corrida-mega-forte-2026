@@ -1,0 +1,688 @@
+/* ===================== Fonts =====================
+   OBS: o arquivo da Heading Now disponível no Design System é uma versão
+   TRIAL (com marca d'água "Zetafonts" embutida no desenho da fonte).
+   Por isso os títulos usam Montserrat Black Italic como substituto
+   temporário. Assim que a fonte licenciada (Heading Now Heavy Italic)
+   estiver disponível, basta trocar o valor de --font-display abaixo. */
+@font-face {
+  font-family: "HeadingNow";
+  src: url("../design-system/assets/fonts/HeadingNowTrial-48HeavyItalic.ttf") format("truetype");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===================== Tokens ===================== */
+:root{
+  --blue: #004272;
+  --blue-deep: #003058;
+  --orange: #FF6807;
+  --orange-light: #FF7810;
+  --dark: #102A3E;
+  --gray: #44596B;
+  --light-bg: #F4F7FA;
+  --white: #FFFFFF;
+
+  --font-display: "Montserrat", sans-serif; /* trocar para "HeadingNow" quando houver a fonte licenciada */
+  --font-body: "Montserrat", system-ui, -apple-system, sans-serif;
+
+  --topbar-h: 34px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-snap-type: y proximity;
+  scroll-padding-top: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding-top: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
+  font-family: var(--font-body);
+  color: var(--dark);
+  background: var(--blue);
+  overflow-x: hidden;
+}
+
+/* ---- Tarja fixa com a contagem regressiva ---- */
+.topbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  padding: 9px 14px;
+  padding-top: calc(9px + env(safe-area-inset-top, 0px));
+  background: linear-gradient(90deg, var(--orange) 0%, var(--orange-light) 100%);
+  color: var(--white);
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+}
+
+.topbar__label{
+  font: 800 10.5px/1 var(--font-body);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .92;
+}
+
+.topbar__time{
+  font: 800 12.5px/1 var(--font-body);
+  letter-spacing: .03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.topbar__time b{
+  font-style: italic;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ===================== Animações ===================== */
+@keyframes revealUp{
+  from{ opacity: 0; transform: translateY(26px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealScale{
+  from{ opacity: 0; transform: scale(.92); }
+  to{ opacity: 1; transform: scale(1); }
+}
+
+@keyframes floatY{
+  0%, 100%{ transform: translateY(0); }
+  50%{ transform: translateY(-14px); }
+}
+
+@keyframes pulseScale{
+  0%, 100%{ transform: scale(1); }
+  50%{ transform: scale(1.05); }
+}
+
+@keyframes ringPulse{
+  0%{ transform: scale(1); opacity: .55; }
+  100%{ transform: scale(1.85); opacity: 0; }
+}
+
+@keyframes bounceY{
+  0%, 100%{ transform: translateY(0); }
+  50%{ transform: translateY(7px); }
+}
+
+@keyframes bgPan{
+  0%{ background-position: 0 0; }
+  100%{ background-position: 227.12px 0; }
+}
+
+.reveal{
+  opacity: 0;
+  transform: translateY(26px);
+}
+.reveal.is-visible{
+  animation: revealUp .8s cubic-bezier(.16,.8,.42,1) var(--d, 0s) both;
+}
+
+.reveal--scale{ transform: scale(.92); }
+.reveal--scale.is-visible{ animation-name: revealScale; }
+
+.hero__athlete{
+  animation: floatY 3.4s ease-in-out infinite;
+}
+
+.video__play-icon::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--orange);
+  animation: ringPulse 2.2s ease-out infinite;
+  z-index: -1;
+}
+
+/* ---- transição de tinta laranja ao clicar no CTA ---- */
+.page-transition{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.page-transition__blob{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border-radius: 50%;
+  background: var(--orange);
+  transform: scale(0);
+  transition: transform .9s cubic-bezier(.65,0,.35,1);
+  will-change: transform;
+}
+
+.page-transition__blob.is-active{
+  transform: scale(var(--pt-scale, 80));
+}
+
+@media (prefers-reduced-motion: reduce){
+  .page-transition__blob{ transition: none !important; }
+  .reveal{
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .hero__athlete,
+  .video__play-icon::before,
+  .impact__stripes,
+  .hero__scroll-cta-icon{
+    animation: none !important;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+
+/* ===================== CTA ===================== */
+.cta-inscricao{
+  width: 100%;
+  max-width: 480px;
+  padding: 19px 24px;
+  border-radius: 999px;
+  background: var(--orange);
+  color: var(--white);
+  font: 800 15px/1 var(--font-body);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 26px rgba(255,104,7,.45);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.cta-inscricao:hover,
+.cta-inscricao:focus-visible{
+  background: var(--orange-light);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(255,104,7,.55);
+}
+.cta-inscricao:active{ transform: translateY(0); }
+
+/* ===================== Section base ===================== */
+main { display: block; }
+
+section {
+  position: relative;
+  min-height: calc(100svh - var(--topbar-h) - env(safe-area-inset-top, 0px));
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+/* ===================== 1ª DOBRA — HERO ===================== */
+.hero{
+  background: var(--blue);
+  color: var(--white);
+  justify-content: center;
+  padding: max(20px, env(safe-area-inset-top)) 24px;
+}
+
+.hero__bg{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__curve{
+  position: absolute;
+  top: -60px;
+  left: -120px;
+  height: 480px;
+  width: auto;
+  opacity: .85;
+}
+
+.hero__particles{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: none;
+  pointer-events: none;
+}
+
+.hero__athlete-stage{
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.hero__athlete{
+  position: relative;
+  height: 22vh;
+  max-height: 185px;
+  width: auto;
+  filter: drop-shadow(0 18px 30px rgba(0,20,40,.35));
+}
+
+.hero__logo--mobile{
+  align-self: center;
+  position: relative;
+  z-index: 2;
+  margin-top: -116px;
+}
+
+.hero__logo--desktop{ display: none; }
+
+.hero__prize{
+  align-self: center;
+  position: relative;
+  z-index: 2;
+  margin: 4px 0 0;
+  max-width: 22ch;
+  font: 900 clamp(22px, 6.6vw, 36px)/1.05 var(--font-display);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--white);
+}
+
+.hero__prize-accent{ color: var(--orange-light); }
+
+.hero__info--desktop{ display: none; }
+.hero__info.hero__info--mobile{ align-self: center; margin-top: 18px; margin-bottom: 68px; }
+
+.hero__inner{
+  display: none;
+  position: relative;
+  z-index: 2;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 13px;
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+  margin-top: 10px;
+}
+
+.hero__scroll-cta{
+  position: absolute;
+  left: 50%;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  translate: -50% 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1.5px solid rgba(255,255,255,.5);
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+  color: var(--white);
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+
+.hero__scroll-cta-icon{
+  display: flex;
+  animation: bounceY 1.7s ease-in-out infinite;
+}
+
+.hero__logo{
+  width: min(168px, 46vw);
+  height: auto;
+  margin-bottom: 0;
+}
+
+.hero__headline{
+  margin: 6px 0 0;
+  font: 900 clamp(30px, 9vw, 52px)/.96 var(--font-display);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+
+.hero__sub{
+  display: none;
+  margin: 0;
+  max-width: 32ch;
+  font: 500 clamp(15px, 4vw, 18px)/1.4 var(--font-body);
+  color: #CFE2F0;
+}
+
+.hero__info{
+  list-style: none;
+  margin: 2px 0 2px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 5px;
+  font: 800 13px/1 var(--font-body);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.hero__info li{
+  position: relative;
+  padding-left: 22px;
+}
+
+.hero__info li::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  width: 12px;
+  height: 3px;
+  background: var(--orange);
+  border-radius: 2px;
+}
+
+.cta-inscricao{
+  margin-top: 6px;
+  padding: 16px 18px;
+  white-space: nowrap;
+  font-size: clamp(11.5px, 3.9vw, 15px);
+}
+
+/* ===================== 2ª DOBRA — IMPACTO ===================== */
+.impact{
+  background: var(--blue-deep);
+  color: var(--white);
+  justify-content: flex-start;
+  padding: max(14px, env(safe-area-inset-top)) 24px 0;
+}
+
+.impact__bg{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.impact__crowd{
+  position: absolute;
+  right: -12%;
+  bottom: -4%;
+  height: 62%;
+  width: auto;
+  opacity: .16;
+}
+
+.impact__stripes{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: repeating-linear-gradient(108deg, var(--orange) 0 10px, transparent 10px 24px);
+  animation: bgPan 14s linear infinite;
+}
+
+.impact__particles{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: none;
+  pointer-events: none;
+}
+
+.impact__inner{
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.kicker{
+  display: inline-block;
+  font: 800 11px/1.35 var(--font-body);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--orange-light);
+}
+
+
+.impact__headline{
+  margin: 0;
+  max-width: 18ch;
+  font: 900 clamp(24px, 7vw, 38px)/1.05 var(--font-display);
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+
+.impact__text{
+  margin: 0;
+  max-width: 36ch;
+  font: 400 13.5px/1.45 var(--font-body);
+  color: #CFE2F0;
+}
+
+/* ---- video ---- */
+.video{
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 4px 0 2px;
+}
+
+.video__mascot{
+  display: none;
+}
+
+.video__cover{
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 30vh;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(160deg, var(--blue) 0%, var(--blue-deep) 100%);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video__cover-img{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video__cover::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(180deg, rgba(0,32,58,.15) 0%, rgba(0,32,58,.75) 100%);
+}
+
+.video__play-icon{
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--white);
+  box-shadow: 0 10px 24px rgba(255,104,7,.5);
+  margin-bottom: 44px;
+}
+
+.video__label{
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  z-index: 1;
+  font: 800 11px/1.3 var(--font-body);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-align: left;
+}
+
+.video__cover[hidden]{ display: none; }
+
+.video__embed{
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #000;
+}
+.video__embed video{
+  width: 100%;
+  max-height: 56vh;
+  display: block;
+}
+
+.footer{
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+  padding: 12px 24px max(12px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+
+.footer__data{
+  margin: 0;
+  font: 700 10.5px/1.4 var(--font-body);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: #9FC0D8;
+  white-space: nowrap;
+}
+
+.footer__realizacao{
+  width: min(220px, 54vw);
+  height: auto;
+}
+
+/* ===================== Desktop / tablet ===================== */
+@media (min-width: 860px){
+  .hero{
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4vw;
+    gap: 16px;
+  }
+
+  .hero__athlete-stage{
+    flex: 0 0 auto;
+    margin-top: 0;
+  }
+
+  .hero__athlete{
+    height: 78vh;
+    max-height: 780px;
+  }
+
+  .hero__curve{
+    height: 720px;
+    top: -80px;
+    left: -160px;
+  }
+
+  .hero__particles{ display: block; }
+
+  .hero__inner{
+    display: flex;
+    background: none;
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 640px;
+    flex: 0 1 640px;
+    gap: 14px;
+  }
+
+  .hero__logo--mobile,
+  .hero__prize,
+  .hero__info--mobile{ display: none; }
+
+  .hero__logo--desktop{ display: block; }
+  .hero__info--desktop{ display: flex; }
+
+  .hero__logo{ width: 300px; }
+  .hero__headline{ max-width: 20ch; font-size: clamp(38px, 4.6vw, 62px); line-height: 1.05; }
+  .hero__sub{ display: block; max-width: 42ch; font-size: clamp(18px, 1.8vw, 22px); }
+  .hero__info{ align-items: flex-start; font-size: clamp(14px, 1.4vw, 17px); gap: 8px; }
+  .cta-inscricao{ width: auto; padding-left: 40px; padding-right: 40px; }
+
+  .topbar__label{ font-size: 12px; }
+  .topbar__time{ font-size: 14px; }
+
+  .impact__inner{ max-width: 720px; margin: 0 auto; justify-content: flex-start; }
+  .impact__headline{ max-width: 22ch; }
+  .kicker__break{ display: none; }
+  .video{ max-width: 620px; }
+  .video__cover{ max-height: 62vh; }
+  .video__embed video{ max-height: 62vh; }
+  .impact__crowd{ display: none; }
+  .impact__particles{ display: block; }
+  .video__mascot{
+    display: block;
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    translate: 0 -50%;
+    height: 90%;
+    max-height: 460px;
+    width: auto;
+    margin-left: 28px;
+    filter: drop-shadow(0 18px 30px rgba(0,20,40,.4));
+  }
+
+  .footer{ flex-direction: row; justify-content: space-between; text-align: left; }
+  .footer__data{ font-size: 12px; letter-spacing: .06em; }
+}
+
+@media (min-width: 1200px){
+  .hero__athlete{ max-height: 860px; }
+}

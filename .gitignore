@@ -1,0 +1,10 @@
+# OS / editores
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.vscode/
+.idea/
+
+# Artefatos locais
+.thumbnail
