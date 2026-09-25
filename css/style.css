@@ -234,6 +234,8 @@ section {
 
 /* ===================== 1ª DOBRA — HERO ===================== */
 .hero{
+  /* Espaço extra em telas altas: o avatar cresce para baixo nessa medida e as infos descem junto */
+  --info-shift: clamp(0px, calc((100svh - 640px) * .62), 106px);
   background: var(--blue);
   color: var(--white);
   justify-content: center;
@@ -275,8 +277,7 @@ section {
 
 .hero__athlete{
   position: relative;
-  height: 22vh;
-  max-height: 185px;
+  height: calc(min(22vh, 185px) + var(--info-shift));
   width: auto;
   filter: drop-shadow(0 18px 30px rgba(0,20,40,.35));
 }
@@ -286,6 +287,7 @@ section {
   position: relative;
   z-index: 2;
   margin-top: -116px;
+  translate: 0 -18px; /* sobe só a logo, sem mexer no resto da dobra */
 }
 
 .hero__logo--desktop{ display: none; }
@@ -296,7 +298,7 @@ section {
   z-index: 2;
   margin: 4px 0 0;
   max-width: 22ch;
-  font: 900 clamp(22px, 6.6vw, 36px)/1.05 var(--font-display);
+  font: 900 clamp(25px, 7.6vw, 40px)/1.05 var(--font-display);
   font-style: italic;
   text-transform: uppercase;
   letter-spacing: -.01em;
@@ -308,7 +310,18 @@ section {
 .hero__prize-accent{ color: var(--orange-light); }
 
 .hero__info--desktop{ display: none; }
-.hero__info.hero__info--mobile{ align-self: center; margin-top: 18px; margin-bottom: 68px; }
+/* Mobile: infos ~1.33x maiores, logo abaixo dos pés do avatar.
+   A margem inferior desconta o crescimento do avatar (--info-shift),
+   para que logo/prêmio/cabeça do avatar não saiam do lugar. */
+.hero__info.hero__info--mobile{
+  align-self: center;
+  margin-top: 18px;
+  margin-bottom: calc(41px - var(--info-shift));
+  gap: 7px;
+  font-size: clamp(14px, 4.6vw, 18px);
+}
+.hero__info--mobile li{ padding-left: 1.65em; }
+.hero__info--mobile li::before{ width: .9em; height: .23em; }
 
 .hero__inner{
   display: none;
